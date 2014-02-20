@@ -10,8 +10,9 @@ namespace GenericSocketHelper
 {
     public class ByteHelper:IDisposable
     {
-         
-        public byte[] GenericToByteArray<T>(T obj)
+        private bool disposed = false;
+
+        public byte[] GenericToByteArray<T>(T obj) where T:class // To prevent integral type to be passed in the method
         {
             if (obj == null) return null;
             BinaryFormatter bf = new BinaryFormatter();
@@ -19,7 +20,7 @@ namespace GenericSocketHelper
             bf.Serialize(ms, obj);
             return ms.ToArray();           
         }
-        public object ByteArrayToGeneric<T>(byte[] arrBytes)
+        public object ByteArrayToGeneric<T>(byte[] arrBytes) 
         {
             MemoryStream memStream = new MemoryStream();
             BinaryFormatter binForm = new BinaryFormatter();
@@ -47,9 +48,23 @@ namespace GenericSocketHelper
             }
             return result;
         }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                   // CleanUp
+                }
+
+                disposed = true;
+            }
+        }
   
         public void Dispose()
-        {         
+        {
+            Dispose(true);
             GC.SuppressFinalize(this);         
         }
          ~ ByteHelper()
