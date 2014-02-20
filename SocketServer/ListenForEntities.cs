@@ -60,21 +60,19 @@ public class ListenForEntities
                         stream.Read(bytes, 0, bytes.Length);
                         using (ByteHelper bt = new ByteHelper())
                         {
-                            object obj = bt.ByteArrayToGeneric<object>(bytes);
-                            switch (obj.GetType().ToString())
-                            {
-                                case "ModelsContainer.person":
+                           object obj = bt.ByteArrayToGeneric<object>(bytes);
+                           if (obj.GetType() == typeof(person))
+                           {
                                     person newpersonentity = (person)obj;                                  
                                     Logdata= string.Concat("......  Received an entity of type ...." , obj.GetType().ToString() , " " , newpersonentity.email);
                                     byte[] msg = System.Text.Encoding.ASCII.GetBytes(Logdata);
                                     stream.Write(msg, 0, msg.Length);
                                     Console.WriteLine(Logdata);
                                     break;
-                            }
+                           }
                         }
                     }
-                    while (stream.DataAvailable);
-                   
+                    while (stream.DataAvailable);                   
                 }
                 client.Close();
                 server.Stop();
